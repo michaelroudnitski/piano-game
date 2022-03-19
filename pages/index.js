@@ -7,7 +7,12 @@ import Treble from '../components/treble';
 import Bass from '../components/bass';
 
 export default function Home() {
-  const [note, setNote] = useState(chooseNote());
+  const [note, setNote] = useState(null);
+  useEffect(() => setNote(chooseNote()), [])
+
+  if (note == null) {
+    return null
+  }
 
   return (
     <div>
@@ -21,8 +26,8 @@ export default function Home() {
         <div className="flex flex-col h-screen items-center justify-center">
           <Treble note={note} />
           {/* <Bass note={note} /> */}
-          <div className="mt-12">
-            <input type="text" autoFocus={true} placeholder="." className="px-2 py-3 relative bg-white uppercase text-center rounded-lg text-2xl font-bold border-0 shadow-md outline-none focus:outline-none ring-gray-600 ring focus:ring"/>
+          <div className="mt-8">
+            <input type="text" autoFocus={true} className="px-2 py-3 relative bg-white uppercase text-center rounded-lg text-2xl font-bold border-0 shadow-md outline-none focus:outline-none ring-gray-600 ring focus:ring" />
           </div>
         </div>
       </main>
