@@ -1,7 +1,7 @@
 import Staff from "./staff";
 
 export default function Bass({ note }) {
-  const level = NOTE_MAPPING[note];
+  const level = NOTE_MAPPING[note.key] + (note.octave === 2 ? 7 : 0);
 
   return (
     <Staff clef="bass" level={level} />
