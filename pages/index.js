@@ -53,7 +53,7 @@ export default function Home() {
         <div className="flex flex-col h-screen items-center justify-center">
           <span className={correct ? "text-green-500" : "text-black dark:text-slate-100"}>
             <Treble note={note} />
-            <Bass note={note} />
+            {/* <Bass note={note} /> */}
           </span>
 
           <div className="mt-8">
@@ -63,7 +63,7 @@ export default function Home() {
               autoFocus={true}
               onChange={e => handleGuess(e.target.value.toUpperCase())}
               maxLength={1}
-              className={"px-2 py-3 uppercase text-center rounded-lg text-2xl font-bold border-0 shadow-lg ring-gray-600 ring focus:ring " + (correct ? "focus:ring-green-500" : (correct === false ? "focus:ring-red-500" : "focus:ring-yellow-500"))}
+              className={"px-2 py-3 dark:bg-black uppercase text-center rounded-lg text-2xl font-bold border-0 shadow-lg ring-gray-600 ring focus:ring " + (correct ? "focus:ring-green-500 text-green-500" : (correct === false ? "focus:ring-red-500 text-red-500" : "focus:ring-yellow-500 text-yellow-500"))}
             />
           </div>
         </div>
