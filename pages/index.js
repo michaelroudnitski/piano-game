@@ -38,27 +38,12 @@ export default function Home() {
   }
 
   if (note.key == null) {
-    return null
+    return <HTMLHead />
   }
 
   return (
     <div className="dark:bg-black">
-      <Head>
-        <title>Piano Game</title>
-        <meta name="description" content="Learn to read sheet music with this simple game. Just type the notes as you read them." />
-        <meta property="og:title" content="Piano Game by Michael Roudnitski" />
-        <meta property="og:type" content="website" />
-        <meta property="og:image" content="/og_image.png" />
-        <meta property="og:url" content="https://www.pianogame.mroudnitski.com" />
-        <meta property="og:description" content="Learn to read sheet music with this simple game. Just type the notes as you read them." />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta property="twitter:domain" content="pianogame.mroudnitski.com" />
-        <meta property="twitter:url" content="https://www.pianogame.mroudnitski.com" />
-        <meta name="twitter:title" content="Piano Game by Michael Roudnitski" />
-        <meta name="twitter:description" content="Learn to read sheet music with this simple game. Just type the notes as you read them." />
-        <meta name="twitter:image" content="/og_image.png" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <HTMLHead />
 
       <main>
         <div className="flex flex-col h-screen items-center justify-center">
@@ -90,3 +75,22 @@ const chooseNote = () => {
   const index = Math.floor(Math.random() * notes.length);
   return { key: notes[index], octave: Math.random() > 0.5 ? 1 : 2 };
 }
+
+const HTMLHead = () => (
+  <Head>
+    <title>Piano Game</title>
+    <meta name="description" content="Learn to read sheet music with this simple game. Just type the notes as you read them." />
+    <meta property="og:title" content="Piano Game" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/og_image.png" />
+    <meta property="og:url" content="https://www.pianogame.mroudnitski.com" />
+    <meta property="og:description" content="Learn to read sheet music with this simple game. Just type the notes as you read them." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="twitter:domain" content="pianogame.mroudnitski.com" />
+    <meta property="twitter:url" content="https://www.pianogame.mroudnitski.com" />
+    <meta name="twitter:title" content="Piano Game" />
+    <meta name="twitter:description" content="Learn to read sheet music with this simple game. Just type the notes as you read them." />
+    <meta name="twitter:image" content="/og_image.png" />
+    <link rel="icon" href="/favicon.ico" />
+  </Head>
+)
