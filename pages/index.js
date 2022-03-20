@@ -42,11 +42,11 @@ export default function Home() {
   }
 
   return (
-    <div className="dark:bg-black">
+    <div className="dark:bg-black flex flex-col h-screen">
       <HTMLHead />
 
-      <main>
-        <div className="flex flex-col h-screen items-center justify-center">
+      <main className="grow">
+        <div className="flex flex-col h-full items-center justify-center">
           <span className={correct ? "text-green-500" : "text-black dark:text-slate-100"}>
             <Treble note={note} />
             {/* <Bass note={note} /> */}
