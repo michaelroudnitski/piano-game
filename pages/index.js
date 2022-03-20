@@ -82,15 +82,16 @@ const HTMLHead = () => (
     <meta name="description" content="Learn to read sheet music with this simple game. Just type the notes as you read them." />
     <meta property="og:title" content="Piano Game" />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/og_image.png" />
+    <meta property="og:image" content="og_image.png" />
     <meta property="og:url" content="https://www.pianogame.mroudnitski.com" />
     <meta property="og:description" content="Learn to read sheet music with this simple game. Just type the notes as you read them." />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@mroudnitski" />
     <meta property="twitter:domain" content="pianogame.mroudnitski.com" />
     <meta property="twitter:url" content="https://www.pianogame.mroudnitski.com" />
     <meta name="twitter:title" content="Piano Game" />
     <meta name="twitter:description" content="Learn to read sheet music with this simple game. Just type the notes as you read them." />
-    <meta name="twitter:image" content="/og_image.png" />
+    <meta name="twitter:image" content="og_image.png" />
     <link rel="icon" href="/favicon.ico" />
   </Head>
 )
