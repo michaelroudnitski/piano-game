@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Piano Game
+A quick and fun app I wrote that helped me learn to read musical notes
+<img width="971" alt="Screen Shot 2022-09-06 at 1 55 54 PM" src="https://user-images.githubusercontent.com/28542979/188705858-db482274-0a1b-4806-b4b1-adf19778d429.png">
 
 ## Getting Started
 
