@@ -13,7 +13,7 @@ export default function Staff({ clef, level }) {
   const note = needsLedgerLine(level) ? <NoteLined /> : <NoteNormal />;
 
   return (
-    <div className="relative mt-10 mb-4" style={{ width: 'min(490px, 90vw)' }}>
+    <div className="relative" style={{ width: 'min(490px, 90vw)' }}>
       <div className="border-black dark:border-slate-200">
         <div className="h-5 w-full border-t border-inherit"></div>
         <div className="h-5 w-full border-t border-inherit"></div>
