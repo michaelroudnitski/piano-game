@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 /* components */
 import NoteNormal from "./icons/note-normal";
 import NoteLined from "./icons/note-lined";
