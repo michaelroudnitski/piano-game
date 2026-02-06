@@ -55,10 +55,7 @@ export default function Footer() {
           ))}
         </div>
         <div className="mt-2 md:mt-0 md:order-1">
-          <p className="text-center text-base text-gray-400">Made with ❤️ in Toronto</p>
-        </div>
-        <div className="mt-2 md:mt-0 md:order-2">
-          <p className="text-center text-xs md:text-base text-gray-400">&copy; 2022 Michael Roudnitski</p>
+          <p className="text-center text-xs md:text-base text-gray-400">&copy; {new Date().getFullYear()} Michael Roudnitski</p>
         </div>
       </div>
     </footer>

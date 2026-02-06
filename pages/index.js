@@ -13,7 +13,7 @@ export default function Home() {
   const [feedbackNote, setFeedbackNote] = useState(null);
   const [score, setScore] = useState(0);
   const lockedRef = useRef(false);
-  useEffect(() => setNote(chooseNote()), []);
+  useEffect(() => setNote(drawNote()), []);
 
   const handleGuess = useCallback((guess) => {
     if (lockedRef.current) return;
@@ -29,7 +29,7 @@ export default function Home() {
       setTimeout(() => {
         setCorrect(null);
         setFeedbackNote(null);
-        setNote(chooseNote());
+        setNote(drawNote());
         lockedRef.current = false;
       }, 750);
     } else {
@@ -103,11 +103,36 @@ function Well({ children, className = '', style }) {
   );
 }
 
-const chooseNote = () => {
-  const notes = ["C", "D", "E", "F", "G", "A", "B"];
-  const index = Math.floor(Math.random() * notes.length);
-  return { key: notes[index], octave: Math.random() > 0.5 ? 1 : 2 };
+const KEYS = ["C", "D", "E", "F", "G", "A", "B"];
+const OCTAVES = [1, 2];
+
+function buildPool(exclude) {
+  const pool = [];
+  for (const key of KEYS) {
+    for (const octave of OCTAVES) {
+      if (exclude && key === exclude.key && octave === exclude.octave) continue;
+      pool.push({ key, octave });
+    }
+  }
+  // Fisher-Yates shuffle
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool;
 }
+
+function createNoteDeck() {
+  let pool = [];
+  let last = null;
+  return function draw() {
+    if (pool.length === 0) pool = buildPool(last);
+    last = pool.pop();
+    return last;
+  };
+}
+
+const drawNote = createNoteDeck();
 
 const HTMLHead = () => (
   <Head>
