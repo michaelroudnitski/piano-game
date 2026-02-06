@@ -13,6 +13,7 @@ export default function Home() {
   const [feedbackNote, setFeedbackNote] = useState(null);
   const [score, setScore] = useState(0);
   const lockedRef = useRef(false);
+  const wrongTimerRef = useRef(null);
   useEffect(() => setNote(drawNote()), []);
 
   const handleGuess = useCallback((guess) => {
@@ -20,10 +21,11 @@ export default function Home() {
     const upper = guess.toUpperCase();
     if (!'CDEFGAB'.includes(upper)) return;
 
-    lockedRef.current = true;
+    clearTimeout(wrongTimerRef.current);
     setFeedbackNote(upper);
 
     if (upper === note.key) {
+      lockedRef.current = true;
       setCorrect(true);
       setScore(s => s + 1);
       setTimeout(() => {
@@ -34,10 +36,9 @@ export default function Home() {
       }, 750);
     } else {
       setCorrect(false);
-      setTimeout(() => {
+      wrongTimerRef.current = setTimeout(() => {
         setCorrect(null);
         setFeedbackNote(null);
-        lockedRef.current = false;
       }, 750);
     }
   }, [note.key]);
