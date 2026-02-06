@@ -44,21 +44,25 @@ const navigation = [
 
 export default function Footer() {
   return (
-    <footer className="dark:bg-black w-full mt-2">
-      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
-        <div className="flex justify-center space-x-6 md:order-2">
+    <footer className="dark:bg-black w-full flex flex-col items-center gap-3 px-4 py-4">
+      <div className="rounded-lg border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900 px-4 py-3 text-xs md:text-sm text-gray-500 dark:text-zinc-500" style={{ width: 'min(490px, 90vw)' }}>
+        <p className="font-medium text-gray-700 dark:text-zinc-300 mb-1 md:mb-2">How to play</p>
+        <ul className="list-disc list-inside">
+          <li>Read the note on the staff above</li>
+          <li>Type the key or tap the piano</li>
+          <li>Green = correct, red = wrong</li>
+        </ul>
+      </div>
+
+      <div className="flex items-center gap-6">
+        <p className="text-xs text-gray-400">&copy; {new Date().getFullYear()} Michael Roudnitski</p>
+        <div className="flex space-x-4">
           {navigation.map((item) => (
             <a key={item.name} href={item.href} className="text-gray-400 hover:text-gray-500">
               <span className="sr-only">{item.name}</span>
-              <item.icon className="h-6 w-6" aria-hidden="true" />
+              <item.icon className="h-5 w-5" aria-hidden="true" />
             </a>
           ))}
-        </div>
-        <div className="mt-2 md:mt-0 md:order-1">
-          <p className="text-center text-base text-gray-400">Made with ❤️ in Toronto</p>
-        </div>
-        <div className="mt-2 md:mt-0 md:order-2">
-          <p className="text-center text-xs md:text-base text-gray-400">&copy; 2022 Michael Roudnitski</p>
         </div>
       </div>
     </footer>

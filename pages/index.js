@@ -1,68 +1,86 @@
 import Head from 'next/head';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 
 /* components */
 import Footer from '../components/footer';
 import Treble from '../components/treble';
 import Bass from '../components/bass';
+import Piano from '../components/piano';
 
 export default function Home() {
   const [note, setNote] = useState({ key: null, octave: 1 });
   const [correct, setCorrect] = useState(null);
-  useEffect(() => setNote(chooseNote()), [])
-  const textInput = useRef(null);
+  const [feedbackNote, setFeedbackNote] = useState(null);
+  const [score, setScore] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const lockedRef = useRef(false);
+  const wrongTimerRef = useRef(null);
+  useEffect(() => setNote(drawNote()), []);
 
-  const handleGuess = (guess) => {
-    if (guess.length != 1) return;
+  const handleGuess = useCallback((guess) => {
+    if (lockedRef.current) return;
+    const upper = guess.toUpperCase();
+    if (!'CDEFGAB'.includes(upper)) return;
 
-    guess === note.key ? handleCorrect() : handleWrong();
-  }
+    clearTimeout(wrongTimerRef.current);
+    setFeedbackNote(upper);
 
-  const handleCorrect = () => {
-    setCorrect(true);
+    if (upper === note.key) {
+      lockedRef.current = true;
+      setCorrect(true);
+      setScore(s => s + 1);
+      setStreak(s => s + 1);
+      setTimeout(() => {
+        setCorrect(null);
+        setFeedbackNote(null);
+        setNote(drawNote());
+        lockedRef.current = false;
+      }, 750);
+    } else {
+      setCorrect(false);
+      setStreak(0);
+      wrongTimerRef.current = setTimeout(() => {
+        setCorrect(null);
+        setFeedbackNote(null);
+      }, 750);
+    }
+  }, [note.key]);
 
-    setTimeout(() => {
-      setCorrect(null);
-      setNote(chooseNote());
-      textInput.current.value = "";
-    }, 750);
-  }
-
-  const handleWrong = () => {
-    setCorrect(false);
-
-    setTimeout(() => {
-      setCorrect(null);
-      textInput.current.value = "";
-    }, 750);
-  }
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
+      handleGuess(e.key);
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [handleGuess]);
 
   if (note.key == null) {
     return <HTMLHead />
   }
 
   return (
-    <div className="dark:bg-black flex flex-col h-screen">
+    <div className="dark:bg-black grid grid-rows-[1fr_auto]" style={{ height: '100dvh' }}>
       <HTMLHead />
 
-      <main className="grow">
-        <div className="flex flex-col h-full items-center justify-center">
-          <span className={correct ? "text-green-500" : "text-black dark:text-slate-100"}>
-            <Treble note={note} />
-            {/* <Bass note={note} /> */}
-          </span>
+      <main className="flex flex-col items-center justify-center gap-[3vh]">
+        <span className={correct ? "text-green-500" : "text-black dark:text-slate-100"}>
+          <Treble note={note} />
+          {/* <Bass note={note} /> */}
+        </span>
 
-          <div className="mt-8">
-            <input
-              type="text"
-              ref={textInput}
-              autoFocus={true}
-              onChange={e => handleGuess(e.target.value.toUpperCase())}
-              maxLength={1}
-              className={"px-2 py-3 dark:bg-black uppercase text-center rounded-lg text-2xl font-bold border-0 shadow-lg ring-gray-600 ring focus:ring " + (correct ? "focus:ring-green-500 text-green-500" : (correct === false ? "focus:ring-red-500 text-red-500" : "focus:ring-yellow-500 text-yellow-500"))}
-            />
-          </div>
-        </div>
+        <Piano onKeyPress={handleGuess} feedbackNote={feedbackNote} correct={correct} />
+
+        <Well className="py-2 flex items-center gap-3">
+          <p key={score} className="text-base font-semibold text-gray-500 dark:text-zinc-500 animate-pop">
+            {score} Correct
+          </p>
+          {streak >= 3 && (
+            <p key={streak} className="text-sm font-bold text-orange-500 animate-pop">
+              {streak} streak!
+            </p>
+          )}
+        </Well>
       </main>
 
       <Footer />
@@ -70,11 +88,47 @@ export default function Home() {
   )
 }
 
-const chooseNote = () => {
-  const notes = ["C", "D", "E", "F", "G", "A", "B"];
-  const index = Math.floor(Math.random() * notes.length);
-  return { key: notes[index], octave: Math.random() > 0.5 ? 1 : 2 };
+function Well({ children, className = '', style }) {
+  return (
+    <div
+      className={`rounded-lg border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900 px-5 ${className}`}
+      style={style}
+    >
+      {children}
+    </div>
+  );
 }
+
+const KEYS = ["C", "D", "E", "F", "G", "A", "B"];
+const OCTAVES = [1, 2];
+
+function buildPool(exclude) {
+  const pool = [];
+  for (const key of KEYS) {
+    for (const octave of OCTAVES) {
+      if (exclude && key === exclude.key && octave === exclude.octave) continue;
+      pool.push({ key, octave });
+    }
+  }
+  // Fisher-Yates shuffle
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool;
+}
+
+function createNoteDeck() {
+  let pool = [];
+  let last = null;
+  return function draw() {
+    if (pool.length === 0) pool = buildPool(last);
+    last = pool.pop();
+    return last;
+  };
+}
+
+const drawNote = createNoteDeck();
 
 const HTMLHead = () => (
   <Head>
