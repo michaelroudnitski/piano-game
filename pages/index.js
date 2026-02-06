@@ -56,38 +56,51 @@ export default function Home() {
   }
 
   return (
-    <div className="dark:bg-black flex flex-col h-screen">
+    <div className="dark:bg-black grid grid-rows-[1fr_auto_auto] h-screen">
       <HTMLHead />
 
-      <main className="grow">
-        <div className="flex flex-col h-full items-center justify-center">
-          <span className={correct ? "text-green-500" : "text-black dark:text-slate-100"}>
-            <Treble note={note} />
-            {/* <Bass note={note} /> */}
-          </span>
+      <main className="flex flex-col items-center justify-center">
+        <span className={correct ? "text-green-500" : "text-black dark:text-slate-100"}>
+          <Treble note={note} />
+          {/* <Bass note={note} /> */}
+        </span>
 
-          <div className="mt-8">
-            <Piano onKeyPress={handleGuess} feedbackNote={feedbackNote} correct={correct} />
-          </div>
-
-          <p className="mt-4 text-sm font-medium text-gray-500 dark:text-zinc-500">
-            {score} correct
-          </p>
-
-          <div className="mt-6 rounded-lg border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900 px-5 py-4 text-sm text-gray-500 dark:text-zinc-500" style={{ width: 'min(490px, 90vw)' }}>
-            <p className="font-medium text-gray-700 dark:text-zinc-300 mb-2">How to play</p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Read the note on the staff above</li>
-              <li>Press the matching key on your keyboard or click the piano</li>
-              <li>Correct guesses flash green, wrong ones flash red</li>
-            </ul>
-          </div>
+        <div className="mt-8">
+          <Piano onKeyPress={handleGuess} feedbackNote={feedbackNote} correct={correct} />
         </div>
+
+        <Well className="mt-4 py-2">
+          <p className="text-base font-semibold text-gray-500 dark:text-zinc-500">
+            {score} Correct
+          </p>
+        </Well>
       </main>
+
+      <div className="flex justify-center px-4 pb-6">
+        <Well className="py-4 text-sm text-gray-500 dark:text-zinc-500" style={{ width: 'min(490px, 90vw)' }}>
+          <p className="font-medium text-gray-700 dark:text-zinc-300 mb-2">How to play</p>
+          <ul className="list-disc list-inside space-y-1">
+            <li>Read the note on the staff above</li>
+            <li>Press the matching key on your keyboard or click the piano</li>
+            <li>Correct guesses flash green, wrong ones flash red</li>
+          </ul>
+        </Well>
+      </div>
 
       <Footer />
     </div>
   )
+}
+
+function Well({ children, className = '', style }) {
+  return (
+    <div
+      className={`rounded-lg border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900 px-5 ${className}`}
+      style={style}
+    >
+      {children}
+    </div>
+  );
 }
 
 const chooseNote = () => {

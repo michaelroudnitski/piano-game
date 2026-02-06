@@ -1,19 +1,10 @@
 import Staff from "./staff";
+import { noteToLevel } from "../lib/staff-layout";
 
 export default function Treble({ note }) {
-  const level = NOTE_MAPPING[note.key] + (note.octave === 2 && note.key != "B" ? 7 : 0);
+  const level = noteToLevel(note.key, note.octave, "treble");
 
   return (
     <Staff clef="treble" level={level} />
   )
-}
-
-const NOTE_MAPPING = {
-  "C": 0,
-  "D": 1,
-  "E": 2,
-  "F": 3,
-  "G": 4,
-  "A": 5,
-  "B": 6,
 }
