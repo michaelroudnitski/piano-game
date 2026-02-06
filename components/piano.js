@@ -23,7 +23,7 @@ export default function Piano({ onKeyPress, feedbackNote, correct }) {
           <button
             key={note}
             onClick={() => onKeyPress(note)}
-            className={`relative flex-1 border border-gray-200 dark:border-zinc-500 cursor-pointer transition-colors duration-100 flex items-end justify-center pb-3 first:rounded-bl-xl last:rounded-br-xl ${getWhiteKeyClasses(note)}`}
+            className={`relative flex-1 border border-gray-200 dark:border-zinc-500 cursor-pointer transition-all duration-100 flex items-end justify-center pb-3 first:rounded-bl-xl last:rounded-br-xl active:scale-[0.97] active:translate-y-[2px] ${getWhiteKeyClasses(note)}`}
           >
             <kbd className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded-md border border-gray-300 dark:border-zinc-600 bg-gray-200 dark:bg-zinc-500 text-gray-500 dark:text-zinc-300 shadow-sm">
               {note}

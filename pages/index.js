@@ -12,6 +12,7 @@ export default function Home() {
   const [correct, setCorrect] = useState(null);
   const [feedbackNote, setFeedbackNote] = useState(null);
   const [score, setScore] = useState(0);
+  const [streak, setStreak] = useState(0);
   const lockedRef = useRef(false);
   const wrongTimerRef = useRef(null);
   useEffect(() => setNote(drawNote()), []);
@@ -28,6 +29,7 @@ export default function Home() {
       lockedRef.current = true;
       setCorrect(true);
       setScore(s => s + 1);
+      setStreak(s => s + 1);
       setTimeout(() => {
         setCorrect(null);
         setFeedbackNote(null);
@@ -36,6 +38,7 @@ export default function Home() {
       }, 750);
     } else {
       setCorrect(false);
+      setStreak(0);
       wrongTimerRef.current = setTimeout(() => {
         setCorrect(null);
         setFeedbackNote(null);
@@ -68,10 +71,15 @@ export default function Home() {
 
         <Piano onKeyPress={handleGuess} feedbackNote={feedbackNote} correct={correct} />
 
-        <Well className="py-2">
-          <p className="text-base font-semibold text-gray-500 dark:text-zinc-500">
+        <Well className="py-2 flex items-center gap-3">
+          <p key={score} className="text-base font-semibold text-gray-500 dark:text-zinc-500 animate-pop">
             {score} Correct
           </p>
+          {streak >= 3 && (
+            <p key={streak} className="text-sm font-bold text-orange-500 animate-pop">
+              {streak} streak!
+            </p>
+          )}
         </Well>
       </main>
 
