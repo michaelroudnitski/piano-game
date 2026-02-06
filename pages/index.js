@@ -1,41 +1,55 @@
 import Head from 'next/head';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 
 /* components */
 import Footer from '../components/footer';
 import Treble from '../components/treble';
 import Bass from '../components/bass';
+import Piano from '../components/piano';
 
 export default function Home() {
   const [note, setNote] = useState({ key: null, octave: 1 });
   const [correct, setCorrect] = useState(null);
-  useEffect(() => setNote(chooseNote()), [])
-  const textInput = useRef(null);
+  const [feedbackNote, setFeedbackNote] = useState(null);
+  const [score, setScore] = useState(0);
+  const lockedRef = useRef(false);
+  useEffect(() => setNote(chooseNote()), []);
 
-  const handleGuess = (guess) => {
-    if (guess.length != 1) return;
+  const handleGuess = useCallback((guess) => {
+    if (lockedRef.current) return;
+    const upper = guess.toUpperCase();
+    if (!'CDEFGAB'.includes(upper)) return;
 
-    guess === note.key ? handleCorrect() : handleWrong();
-  }
+    lockedRef.current = true;
+    setFeedbackNote(upper);
 
-  const handleCorrect = () => {
-    setCorrect(true);
+    if (upper === note.key) {
+      setCorrect(true);
+      setScore(s => s + 1);
+      setTimeout(() => {
+        setCorrect(null);
+        setFeedbackNote(null);
+        setNote(chooseNote());
+        lockedRef.current = false;
+      }, 750);
+    } else {
+      setCorrect(false);
+      setTimeout(() => {
+        setCorrect(null);
+        setFeedbackNote(null);
+        lockedRef.current = false;
+      }, 750);
+    }
+  }, [note.key]);
 
-    setTimeout(() => {
-      setCorrect(null);
-      setNote(chooseNote());
-      textInput.current.value = "";
-    }, 750);
-  }
-
-  const handleWrong = () => {
-    setCorrect(false);
-
-    setTimeout(() => {
-      setCorrect(null);
-      textInput.current.value = "";
-    }, 750);
-  }
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
+      handleGuess(e.key);
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [handleGuess]);
 
   if (note.key == null) {
     return <HTMLHead />
@@ -53,14 +67,20 @@ export default function Home() {
           </span>
 
           <div className="mt-8">
-            <input
-              type="text"
-              ref={textInput}
-              autoFocus={true}
-              onChange={e => handleGuess(e.target.value.toUpperCase())}
-              maxLength={1}
-              className={"px-2 py-3 dark:bg-black uppercase text-center rounded-lg text-2xl font-bold border-0 shadow-lg ring-gray-600 ring focus:ring " + (correct ? "focus:ring-green-500 text-green-500" : (correct === false ? "focus:ring-red-500 text-red-500" : "focus:ring-yellow-500 text-yellow-500"))}
-            />
+            <Piano onKeyPress={handleGuess} feedbackNote={feedbackNote} correct={correct} />
+          </div>
+
+          <p className="mt-4 text-sm font-medium text-gray-500 dark:text-zinc-500">
+            {score} correct
+          </p>
+
+          <div className="mt-6 rounded-lg border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900 px-5 py-4 text-sm text-gray-500 dark:text-zinc-500" style={{ width: 'min(490px, 90vw)' }}>
+            <p className="font-medium text-gray-700 dark:text-zinc-300 mb-2">How to play</p>
+            <ul className="list-disc list-inside space-y-1">
+              <li>Read the note on the staff above</li>
+              <li>Press the matching key on your keyboard or click the piano</li>
+              <li>Correct guesses flash green, wrong ones flash red</li>
+            </ul>
           </div>
         </div>
       </main>
