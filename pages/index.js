@@ -6,6 +6,9 @@ import Footer from '../components/footer';
 import Treble from '../components/treble';
 import Bass from '../components/bass';
 import Piano from '../components/piano';
+import SoundToggle from '../components/sound-toggle';
+
+import { playNote, noteToMidi, guessToMidi } from '../lib/audio';
 
 export default function Home() {
   const [note, setNote] = useState({ key: null, octave: 1 });
@@ -26,6 +29,7 @@ export default function Home() {
     setFeedbackNote(upper);
 
     if (upper === note.key) {
+      playNote(noteToMidi(note));
       lockedRef.current = true;
       setCorrect(true);
       setScore(s => s + 1);
@@ -37,6 +41,7 @@ export default function Home() {
         lockedRef.current = false;
       }, 750);
     } else {
+      playNote(guessToMidi(upper, noteToMidi(note)), { wrong: true });
       setCorrect(false);
       setStreak(0);
       wrongTimerRef.current = setTimeout(() => {
@@ -44,7 +49,7 @@ export default function Home() {
         setFeedbackNote(null);
       }, 750);
     }
-  }, [note.key]);
+  }, [note]);
 
   useEffect(() => {
     const onKeyDown = (e) => {
@@ -62,6 +67,7 @@ export default function Home() {
   return (
     <div className="dark:bg-black grid grid-rows-[1fr_auto]" style={{ height: '100dvh' }}>
       <HTMLHead />
+      <SoundToggle className="fixed top-3 right-3 z-20" />
 
       <main className="flex flex-col items-center justify-center gap-[3vh]">
         <span className={correct ? "text-green-500" : "text-black dark:text-slate-100"}>
