@@ -1,59 +1,21 @@
 import Head from 'next/head';
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 
 /* components */
 import Footer from '../components/footer';
 import Treble from '../components/treble';
 import Bass from '../components/bass';
 import Piano from '../components/piano';
+import Scoreboard from '../components/scoreboard';
+import StaffFeedback from '../components/staff-feedback';
+import useGuessLoop from '../lib/use-guess-loop';
 
 export default function Home() {
   const [note, setNote] = useState({ key: null, octave: 1 });
-  const [correct, setCorrect] = useState(null);
-  const [feedbackNote, setFeedbackNote] = useState(null);
-  const [score, setScore] = useState(0);
-  const [streak, setStreak] = useState(0);
-  const lockedRef = useRef(false);
-  const wrongTimerRef = useRef(null);
   useEffect(() => setNote(drawNote()), []);
 
-  const handleGuess = useCallback((guess) => {
-    if (lockedRef.current) return;
-    const upper = guess.toUpperCase();
-    if (!'CDEFGAB'.includes(upper)) return;
-
-    clearTimeout(wrongTimerRef.current);
-    setFeedbackNote(upper);
-
-    if (upper === note.key) {
-      lockedRef.current = true;
-      setCorrect(true);
-      setScore(s => s + 1);
-      setStreak(s => s + 1);
-      setTimeout(() => {
-        setCorrect(null);
-        setFeedbackNote(null);
-        setNote(drawNote());
-        lockedRef.current = false;
-      }, 750);
-    } else {
-      setCorrect(false);
-      setStreak(0);
-      wrongTimerRef.current = setTimeout(() => {
-        setCorrect(null);
-        setFeedbackNote(null);
-      }, 750);
-    }
-  }, [note.key]);
-
-  useEffect(() => {
-    const onKeyDown = (e) => {
-      if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
-      handleGuess(e.key);
-    };
-    document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
-  }, [handleGuess]);
+  // Judges typed letters and piano presses, keeps score, and asks for the next note.
+  const game = useGuessLoop(note, () => setNote(drawNote()));
 
   if (note.key == null) {
     return <HTMLHead />
@@ -64,23 +26,18 @@ export default function Home() {
       <HTMLHead />
 
       <main className="flex flex-col items-center justify-center gap-[3vh]">
-        <span className={correct ? "text-green-500" : "text-black dark:text-slate-100"}>
+        <StaffFeedback tone={game.tone} answer={game.answer}>
           <Treble note={note} />
           {/* <Bass note={note} /> */}
-        </span>
+        </StaffFeedback>
 
-        <Piano onKeyPress={handleGuess} feedbackNote={feedbackNote} correct={correct} />
+        <Piano onKeyPress={game.guess} marks={game.marks} feedback={game.feedback} />
 
         <Well className="py-2 flex items-center gap-3">
-          <p key={score} className="text-base font-semibold text-gray-500 dark:text-zinc-500 animate-pop">
-            {score} Correct
-          </p>
-          {streak >= 3 && (
-            <p key={streak} className="text-sm font-bold text-orange-500 animate-pop">
-              {streak} streak!
-            </p>
-          )}
+          <Scoreboard stats={game.stats} celebration={game.celebration} />
         </Well>
+
+        <p role="status" className="sr-only">{game.announcement}</p>
       </main>
 
       <Footer />
