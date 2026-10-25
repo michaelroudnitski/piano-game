@@ -1,17 +1,22 @@
+// F clef outline in staff spaces, with its origin at the left edge of the
+// head on the F line (second line from the top). The head is centred on that
+// line, the arch reaches the top line, and the two dots sit in the spaces
+// either side of the F line.
+export const BASS_CLEF_PATH =
+  "M0 0C0-0.62 0.5-1.02 1.1-1.02C1.72-1.02 2.08-0.58 2.08 0C2.08 0.98 1.3 1.86 0.05 2.52L0 2.46C1.02 1.86 1.62 0.95 1.62-0.05C1.62-0.58 1.38-0.84 1.02-0.84C0.62-0.84 0.28-0.62 0.22-0.38C0.3-0.33 0.42-0.42 0.55-0.43C0.78-0.43 0.9-0.22 0.9 0C0.9 0.24 0.7 0.43 0.45 0.43C0.2 0.43 0 0.24 0 0Z" +
+  "M2.65-0.5A0.2 0.2 0 1 1 2.25-0.5A0.2 0.2 0 1 1 2.65-0.5Z" +
+  "M2.65 0.5A0.2 0.2 0 1 1 2.25 0.5A0.2 0.2 0 1 1 2.65 0.5Z";
+
+/** A standalone bass clef icon. */
 const BassIcon = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 270 270"
+    viewBox="-0.1 -1.12 2.85 3.74"
     className="text-inherit"
-    style={{
-      enableBackground: "new 0 0 270 270",
-    }}
-    xmlSpace="preserve"
+    aria-hidden="true"
     {...props}
   >
-    <path fill="currentColor" d="M95 0C46.286 0 20 35.035 20 68c0 16.393 5.134 30.499 14.848 40.794C44.851 119.396 58.736 125 75 125c16.569 0 30-13.431 30-30S91.569 65 75 65c-9.828 0-18.551 4.726-24.023 12.028C50.234 73.834 50 70.676 50 68c0-18.884 15.457-38 45-38 37.664 0 65 35.748 65 85 0 47.058-20.573 76.48-37.831 92.875C100.995 227.991 72.146 240 45 240v30c35.164 0 70.822-14.716 97.831-40.375C173.248 200.729 190 160.02 190 115c0-31.97-9.544-61.113-26.874-82.062C145.554 11.698 121.36 0 95 0z" />
-    <circle fill="currentColor" cx={235} cy={60} r={15} />
-    <circle fill="currentColor" cx={235} cy={120} r={15} />
+    <path fill="currentColor" d={BASS_CLEF_PATH} />
   </svg>
 )
 
