@@ -3,9 +3,11 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 
 /* components */
 import Footer from '../components/footer';
-import Treble from '../components/treble';
-import Bass from '../components/bass';
+import Staff from '../components/staff';
 import Piano from '../components/piano';
+import PracticeSettings from '../components/practice-settings';
+import ClefLabel from '../components/clef-label';
+import { drawNote, recordResult } from '../lib/practice';
 
 export default function Home() {
   const [note, setNote] = useState({ key: null, octave: 1 });
@@ -24,6 +26,7 @@ export default function Home() {
 
     clearTimeout(wrongTimerRef.current);
     setFeedbackNote(upper);
+    recordResult(note, upper === note.key);
 
     if (upper === note.key) {
       lockedRef.current = true;
@@ -44,7 +47,7 @@ export default function Home() {
         setFeedbackNote(null);
       }, 750);
     }
-  }, [note.key]);
+  }, [note]);
 
   useEffect(() => {
     const onKeyDown = (e) => {
@@ -62,11 +65,12 @@ export default function Home() {
   return (
     <div className="dark:bg-black grid grid-rows-[1fr_auto]" style={{ height: '100dvh' }}>
       <HTMLHead />
+      <PracticeSettings className="fixed right-3 top-3 z-20" onChange={() => setNote(drawNote())} />
 
       <main className="flex flex-col items-center justify-center gap-[3vh]">
+        <ClefLabel clef={note.clef} />
         <span className={correct ? "text-green-500" : "text-black dark:text-slate-100"}>
-          <Treble note={note} />
-          {/* <Bass note={note} /> */}
+          <Staff clef={note.clef} level={note.level} />
         </span>
 
         <Piano onKeyPress={handleGuess} feedbackNote={feedbackNote} correct={correct} />
@@ -98,37 +102,6 @@ function Well({ children, className = '', style }) {
     </div>
   );
 }
-
-const KEYS = ["C", "D", "E", "F", "G", "A", "B"];
-const OCTAVES = [1, 2];
-
-function buildPool(exclude) {
-  const pool = [];
-  for (const key of KEYS) {
-    for (const octave of OCTAVES) {
-      if (exclude && key === exclude.key && octave === exclude.octave) continue;
-      pool.push({ key, octave });
-    }
-  }
-  // Fisher-Yates shuffle
-  for (let i = pool.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
-  }
-  return pool;
-}
-
-function createNoteDeck() {
-  let pool = [];
-  let last = null;
-  return function draw() {
-    if (pool.length === 0) pool = buildPool(last);
-    last = pool.pop();
-    return last;
-  };
-}
-
-const drawNote = createNoteDeck();
 
 const HTMLHead = () => (
   <Head>

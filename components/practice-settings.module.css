@@ -1,0 +1,71 @@
+/* The practice settings <dialog>: a bottom sheet on phones, a popover under
+   the gear button on wider screens (--anchor-top / --anchor-right are set from
+   the button's position when it opens). Plain CSS because Tailwind 3.0 has no
+   ::backdrop variant. */
+
+.dialog {
+  position: fixed;
+  inset: auto 0 0 0;
+  width: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  background: transparent;
+  color: inherit;
+}
+
+.dialog::backdrop {
+  background: rgb(0 0 0 / 0.4);
+}
+
+.dialog[open] {
+  animation: sheet-in 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.panel {
+  max-height: 85dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+@media (min-width: 640px) {
+  .dialog {
+    inset: var(--anchor-top, 3.75rem) var(--anchor-right, 0.75rem) auto auto;
+    width: 20.5rem;
+  }
+
+  .dialog::backdrop {
+    background: transparent;
+  }
+
+  .dialog[open] {
+    animation: pop-in 160ms ease-out;
+    transform-origin: top right;
+  }
+
+  .panel {
+    max-height: calc(100dvh - var(--anchor-top, 3.75rem) - 1rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog[open] {
+    animation: none;
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
+  }
+}
