@@ -6,11 +6,16 @@ A quick and fun app I wrote that helped me learn to read musical notes. It shows
 
 **Play it: [pianogame.mroudnitski.com](https://www.pianogame.mroudnitski.com)**
 
-<img width="971" alt="Piano Game (2022 screenshot): a note above a treble staff, with a box below it for typing the note's letter" src="https://user-images.githubusercontent.com/28542979/188705858-db482274-0a1b-4806-b4b1-adf19778d429.png">
+![Piano Game: a note on a treble staff above a one-octave piano, with the score below](docs/screenshot.png)
 
 ## How to play
 
-A note appears on the staff. Name it by typing its letter (`C` through `B`) or by tapping that key on the on-screen piano. The key turns green when you're right and red when you're not, and the game keeps a running score and streak.
+A note appears on the staff. Name it by typing its letter (`C` through `B`) or by tapping that key on the on-screen piano.
+
+- A right answer plays the note and moves on. A wrong key is marked with a ✗; after two misses the game shows you the answer, and you press it to continue.
+- The scoreboard keeps your accuracy, streak and best streak.
+- ⚙ picks what to practice: treble, bass or both clefs, with notes on the staff only or out to one or two ledger lines. Notes you miss come up a little more often.
+- `M` mutes the sound and `?` shows the instructions again.
 
 ## Development
 
@@ -41,11 +46,13 @@ If a build warns that `caniuse-lite` is outdated, `bun update caniuse-lite` refr
 ## Project structure
 
 ```text
-pages/        index.js is the game: state, input handling and layout
-components/   UI pieces, such as the staff and clefs, the piano keyboard and the footer
-lib/          Plain JavaScript helpers (such as staff geometry), with tests beside them
-styles/       globals.css: Tailwind layers and a few keyframes
-public/       Favicon and social preview image
+pages/        index.js wires the game together; _document.js sets up the HTML shell
+components/   UI: the staff, the piano, the scoreboard, the header and help card, practice settings
+lib/          Game logic, with tests beside it: staff geometry, the answer loop, the note deck
+              and adaptive practice, and a small Web Audio piano
+styles/       globals.css: Tailwind layers, layout scaling and animations
+public/       App icons, web manifest and social preview image
+docs/         README screenshot
 ```
 
 ## Deployment
