@@ -1,7 +1,7 @@
-import Head from 'next/head';
 import { useEffect, useState, useRef, useCallback } from 'react';
 
 /* components */
+import PageHead from '../components/page-head';
 import Footer from '../components/footer';
 import Treble from '../components/treble';
 import Bass from '../components/bass';
@@ -56,12 +56,12 @@ export default function Home() {
   }, [handleGuess]);
 
   if (note.key == null) {
-    return <HTMLHead />
+    return <PageHead />
   }
 
   return (
     <div className="dark:bg-black grid grid-rows-[1fr_auto]" style={{ height: '100dvh' }}>
-      <HTMLHead />
+      <PageHead />
 
       <main className="flex flex-col items-center justify-center gap-[3vh]">
         <span className={correct ? "text-green-500" : "text-black dark:text-slate-100"}>
@@ -129,23 +129,3 @@ function createNoteDeck() {
 }
 
 const drawNote = createNoteDeck();
-
-const HTMLHead = () => (
-  <Head>
-    <title>Piano Game</title>
-    <meta name="description" content="Learn to read sheet music with this simple game. Just type the notes as you read them." />
-    <meta property="og:title" content="Piano Game" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="og_image.png" />
-    <meta property="og:url" content="https://www.pianogame.mroudnitski.com" />
-    <meta property="og:description" content="Learn to read sheet music with this simple game. Just type the notes as you read them." />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:creator" content="@mroudnitski" />
-    <meta property="twitter:domain" content="pianogame.mroudnitski.com" />
-    <meta property="twitter:url" content="https://www.pianogame.mroudnitski.com" />
-    <meta name="twitter:title" content="Piano Game" />
-    <meta name="twitter:description" content="Learn to read sheet music with this simple game. Just type the notes as you read them." />
-    <meta name="twitter:image" content="og_image.png" />
-    <link rel="icon" href="/favicon.ico" />
-  </Head>
-)

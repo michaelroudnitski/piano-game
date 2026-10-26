@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <style>
+    .tile { fill: #18181b }
+    .ink { fill: #fafafa }
+    @media (prefers-color-scheme: dark) {
+      .tile { fill: #fafafa }
+      .ink { fill: #18181b }
+    }
+  </style>
+  <rect class="tile" width="512" height="512" rx="114"/>
+  <g class="ink">
+    <ellipse cx="256" cy="352" rx="90" ry="65" transform="rotate(-22 256 352)"/>
+    <rect x="307" y="72" width="36" height="268"/>
+    <rect x="137" y="338" width="238" height="29"/>
+  </g>
+</svg>
