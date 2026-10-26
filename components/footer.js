@@ -1,5 +1,4 @@
-/* This example requires Tailwind CSS v2.0+ */
-const navigation = [
+const links = [
   {
     name: 'Portfolio',
     href: 'https://mroudnitski.com',
@@ -10,11 +9,12 @@ const navigation = [
     ),
   },
   {
-    name: 'Twitter',
-    href: 'https://twitter.com/mroudnitski',
+    name: 'X',
+    href: 'https://x.com/mroudnitski',
     icon: (props) => (
+      // The X mark runs edge to edge, so it's drawn a little smaller to match the other icons.
       <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
-        <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+        <path transform="translate(2.4 2.4) scale(0.8)" d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
       </svg>
     ),
   },
@@ -39,32 +39,32 @@ const navigation = [
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
       </svg>
     ),
-  }
-]
+  },
+];
 
 export default function Footer() {
   return (
-    <footer className="dark:bg-black w-full flex flex-col items-center gap-3 px-4 py-4">
-      <div className="rounded-lg border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900 px-4 py-3 text-xs md:text-sm text-gray-500 dark:text-zinc-500" style={{ width: 'min(490px, 90vw)' }}>
-        <p className="font-medium text-gray-700 dark:text-zinc-300 mb-1 md:mb-2">How to play</p>
-        <ul className="list-disc list-inside">
-          <li>Read the note on the staff above</li>
-          <li>Type the key or tap the piano</li>
-          <li>Green = correct, red = wrong</li>
-        </ul>
-      </div>
-
-      <div className="flex items-center gap-6">
-        <p className="text-xs text-gray-400">&copy; {new Date().getFullYear()} Michael Roudnitski</p>
-        <div className="flex space-x-4">
-          {navigation.map((item) => (
-            <a key={item.name} href={item.href} className="text-gray-400 hover:text-gray-500">
+    <footer className="flex items-center justify-center gap-3 px-3 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] text-zinc-400 dark:text-zinc-500">
+      {/* The page is prerendered, so the year is the build's; don't let a new year trip hydration. */}
+      <p className="text-xs" suppressHydrationWarning>
+        &copy; {new Date().getFullYear()} Michael Roudnitski
+      </p>
+      <ul className="flex items-center">
+        {links.map((item) => (
+          <li key={item.name}>
+            <a
+              href={item.href}
+              target="_blank"
+              rel="noreferrer"
+              title={item.name}
+              className="footer-link grid h-9 w-9 place-items-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 dark:focus-visible:ring-zinc-500"
+            >
               <span className="sr-only">{item.name}</span>
-              <item.icon className="h-5 w-5" aria-hidden="true" />
+              <item.icon className="h-[18px] w-[18px]" aria-hidden="true" />
             </a>
-          ))}
-        </div>
-      </div>
+          </li>
+        ))}
+      </ul>
     </footer>
-  )
+  );
 }

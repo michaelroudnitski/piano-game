@@ -1,8 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 
 /* components */
-import PageHead from '../components/page-head';
-import Footer from '../components/footer';
+import Layout, { GameColumn, StaffPlaceholder } from '../components/layout';
 import Treble from '../components/treble';
 import Bass from '../components/bass';
 import Piano from '../components/piano';
@@ -55,17 +54,11 @@ export default function Home() {
     return () => document.removeEventListener('keydown', onKeyDown);
   }, [handleGuess]);
 
-  if (note.key == null) {
-    return <PageHead />
-  }
-
   return (
-    <div className="dark:bg-black grid grid-rows-[1fr_auto]" style={{ height: '100dvh' }}>
-      <PageHead />
-
-      <main className="flex flex-col items-center justify-center gap-[3vh]">
+    <Layout>
+      <GameColumn>
         <span className={correct ? "text-green-500" : "text-black dark:text-slate-100"}>
-          <Treble note={note} />
+          {note.key == null ? <StaffPlaceholder /> : <Treble note={note} />}
           {/* <Bass note={note} /> */}
         </span>
 
@@ -81,10 +74,8 @@ export default function Home() {
             </p>
           )}
         </Well>
-      </main>
-
-      <Footer />
-    </div>
+      </GameColumn>
+    </Layout>
   )
 }
 

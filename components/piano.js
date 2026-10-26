@@ -16,7 +16,7 @@ export default function Piano({ onKeyPress, feedbackNote, correct }) {
   };
 
   return (
-    <div className="relative select-none" style={{ width: 'min(490px, 90vw)', height: 'min(180px, 33vw)' }}>
+    <div className="relative select-none" style={{ width: '100%', height: 'var(--piano-height, min(180px, 45vw))' }}>
       {/* White keys */}
       <div className="flex h-full gap-[2px]">
         {WHITE_KEYS.map((note) => (
