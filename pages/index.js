@@ -3,22 +3,24 @@ import { useEffect, useState } from 'react';
 
 /* components */
 import Footer from '../components/footer';
-import Treble from '../components/treble';
-import Bass from '../components/bass';
+import Staff from '../components/staff';
 import Piano from '../components/piano';
 import Scoreboard from '../components/scoreboard';
 import StaffFeedback from '../components/staff-feedback';
 import SoundToggle from '../components/sound-toggle';
+import PracticeSettings from '../components/practice-settings';
+import ClefLabel from '../components/clef-label';
 import useGuessLoop from '../lib/use-guess-loop';
 
 import { playNote, noteToMidi, guessToMidi } from '../lib/audio';
+import { drawNote, recordResult } from '../lib/practice';
 
 export default function Home() {
   const [note, setNote] = useState({ key: null, octave: 1 });
   useEffect(() => setNote(drawNote()), []);
 
   // Judges typed letters and piano presses, keeps score, and asks for the next note.
-  const game = useGuessLoop(note, () => setNote(drawNote()), { onResult: playResult });
+  const game = useGuessLoop(note, () => setNote(drawNote()), { onResult: handleResult });
 
   if (note.key == null) {
     return <HTMLHead />
@@ -27,12 +29,15 @@ export default function Home() {
   return (
     <div className="dark:bg-black grid grid-rows-[1fr_auto]" style={{ height: '100dvh' }}>
       <HTMLHead />
-      <SoundToggle className="fixed top-3 right-3 z-20" />
+      <div className="fixed top-3 right-3 z-20 flex items-center gap-1">
+        <PracticeSettings onChange={() => setNote(drawNote())} />
+        <SoundToggle />
+      </div>
 
       <main className="flex flex-col items-center justify-center gap-[3vh]">
+        <ClefLabel clef={note.clef} />
         <StaffFeedback tone={game.tone} answer={game.answer}>
-          <Treble note={note} />
-          {/* <Bass note={note} /> */}
+          <Staff clef={note.clef} level={note.level} />
         </StaffFeedback>
 
         <Piano onKeyPress={game.guess} marks={game.marks} feedback={game.feedback} />
@@ -49,9 +54,13 @@ export default function Home() {
   )
 }
 
-// The right answer, or pressing the revealed answer, plays the note on the staff. Any other
-// answer press plays the pressed key softly. Presses that only skip the pause stay silent.
-function playResult({ outcome, guess, note }) {
+// Runs after every answer press. Counted guesses feed adaptive practice (it keeps only the
+// first try on each note). The right answer, or pressing the revealed answer, plays the note
+// on the staff; any other answer press plays the pressed key softly; skips stay silent.
+function handleResult({ outcome, guess, note }) {
+  if (outcome === 'correct' || outcome === 'wrong' || outcome === 'reveal') {
+    recordResult(note, outcome === 'correct');
+  }
   const target = noteToMidi(note);
   if (outcome === 'correct' || outcome === 'continue') playNote(target);
   else if (outcome !== 'skip') playNote(guessToMidi(guess, target), { wrong: true });
@@ -67,37 +76,6 @@ function Well({ children, className = '', style }) {
     </div>
   );
 }
-
-const KEYS = ["C", "D", "E", "F", "G", "A", "B"];
-const OCTAVES = [1, 2];
-
-function buildPool(exclude) {
-  const pool = [];
-  for (const key of KEYS) {
-    for (const octave of OCTAVES) {
-      if (exclude && key === exclude.key && octave === exclude.octave) continue;
-      pool.push({ key, octave });
-    }
-  }
-  // Fisher-Yates shuffle
-  for (let i = pool.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
-  }
-  return pool;
-}
-
-function createNoteDeck() {
-  let pool = [];
-  let last = null;
-  return function draw() {
-    if (pool.length === 0) pool = buildPool(last);
-    last = pool.pop();
-    return last;
-  };
-}
-
-const drawNote = createNoteDeck();
 
 const HTMLHead = () => (
   <Head>
