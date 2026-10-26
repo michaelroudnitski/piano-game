@@ -1,5 +1,6 @@
 import { useEffect, useSyncExternalStore } from 'react';
 import { isMuted, playNote, setMuted, subscribeMuted } from '../lib/audio';
+import HeaderButton from './header-button';
 
 // Sound on/off button. It is self-contained: the setting persists through
 // lib/audio and the component owns the M shortcut, so it can sit anywhere on the
@@ -20,17 +21,16 @@ export default function SoundToggle({ className = '' }) {
   }, []);
 
   return (
-    <button
-      type="button"
-      onClick={toggleSound}
-      aria-label="Mute sound"
+    <HeaderButton
+      label="Mute sound"
+      title={muted ? 'Unmute (M)' : 'Mute (M)'}
       aria-pressed={muted}
       aria-keyshortcuts="M"
-      title={muted ? 'Unmute (M)' : 'Mute (M)'}
-      className={`flex h-10 w-10 items-center justify-center rounded-full text-gray-400 hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 dark:focus-visible:ring-zinc-600 ${className}`}
+      onClick={toggleSound}
+      className={className}
     >
       <SpeakerIcon muted={muted} />
-    </button>
+    </HeaderButton>
   );
 }
 

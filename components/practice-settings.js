@@ -10,6 +10,7 @@ import {
   usePracticeSettings,
   usePracticeStats,
 } from '../lib/practice';
+import HeaderButton from './header-button';
 import styles from './practice-settings.module.css';
 
 /**
@@ -70,22 +71,20 @@ export default function PracticeSettings({ className = '', onChange }) {
 
   return (
     <>
-      <button
+      <HeaderButton
         ref={buttonRef}
-        type="button"
-        aria-label="Practice settings"
+        label="Practice settings"
         aria-haspopup="dialog"
         aria-expanded={open}
-        title="Practice settings"
         onClick={(e) => {
           usingKeyboard.current = e.detail === 0; // Enter/Space rather than a click
           measure();
           setOpen(true);
         }}
-        className={`inline-flex h-11 w-11 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 dark:text-zinc-500 dark:hover:bg-zinc-900 dark:hover:text-zinc-200 ${open ? 'bg-gray-100 text-gray-700 dark:bg-zinc-900 dark:text-zinc-200' : ''} ${className}`}
+        className={`${open ? 'bg-zinc-100 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100' : ''} ${className}`}
       >
-        <GearIcon className={`h-6 w-6 motion-safe:transition-transform motion-safe:duration-300 ${open ? 'rotate-[60deg]' : ''}`} />
-      </button>
+        <GearIcon className={`h-[22px] w-[22px] motion-safe:transition-transform motion-safe:duration-300 ${open ? 'rotate-[60deg]' : ''}`} />
+      </HeaderButton>
 
       <dialog
         ref={dialogRef}

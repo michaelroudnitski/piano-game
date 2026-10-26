@@ -41,3 +41,141 @@ a {
 * {
   box-sizing: border-box;
 }
+
+/* Page shell --------------------------------------------------------------------------------- */
+/* Plain CSS rather than @layer blocks on purpose: under `next dev`, Tailwind 3.0 silently drops
+   @layer rules that are added while the server is running (until .next/dev is cleared). */
+
+:root {
+  color-scheme: light dark;
+  /* A fixed-viewport game: no double-tap zoom when tapping keys quickly (pinch zoom still
+     works), and no accidental pull-to-refresh mid-streak. */
+  touch-action: manipulation;
+  overscroll-behavior-y: none;
+  --game-zoom: 1;
+  /* The piano fills the column's width; its height is set here (components/piano.js). */
+  --piano-height: min(180px, 45vw);
+}
+
+/* Tall phones have room to spare: taller keys look more like a piano and are easier to hit. */
+@media (max-width: 639px) and (min-height: 740px) {
+  :root { --piano-height: min(210px, 54vw); }
+}
+
+/* On <body>, not a wrapper, so overscroll areas match too. Keep in sync with THEME_COLORS in
+   lib/site.js (the browser's theme-color). */
+body {
+  @apply bg-white text-zinc-900 antialiased;
+}
+@media (prefers-color-scheme: dark) {
+  body {
+    @apply bg-black text-zinc-100;
+  }
+}
+
+/* The staff → piano → score column is laid out at phone size and scaled as one unit where there's
+   room. `zoom` (unlike a transform) scales the space it takes up as well. The steps are sized so
+   header + column + footer still fit the viewport height; browsers without `zoom` keep 1. */
+.game-column {
+  width: min(490px, 90vw);
+  zoom: var(--game-zoom);
+}
+
+/* For things outside the column that should line up with its edges, like the header. */
+.game-width {
+  width: calc(min(490px, 90vw) * var(--game-zoom));
+}
+
+/* Height decides the steps: the column is ~565px tall at zoom 1 (Both clefs), plus ~130px of
+   header, footer and padding. Short laptop screens scale it down a little. */
+@supports (zoom: 1) {
+  @media (min-width: 720px) and (max-height: 699px) {
+    :root { --game-zoom: 0.85; }
+  }
+  @media (min-width: 720px) and (min-height: 800px) {
+    :root { --game-zoom: 1.1; }
+  }
+  @media (min-width: 800px) and (min-height: 900px) {
+    :root { --game-zoom: 1.25; }
+  }
+  @media (min-width: 1024px) and (min-height: 1000px) {
+    :root { --game-zoom: 1.4; }
+  }
+  @media (min-width: 1280px) and (min-height: 1100px) {
+    :root { --game-zoom: 1.55; }
+  }
+}
+
+/* Hover colors only where hovering exists, so they don't stick after a tap on touch screens.
+   The pressed state comes last so it wins over hover. */
+@media (hover: hover) {
+  .header-button:hover {
+    @apply bg-zinc-100 text-zinc-900;
+  }
+  .footer-link:hover {
+    @apply text-zinc-600;
+  }
+}
+@media (hover: hover) and (prefers-color-scheme: dark) {
+  .header-button:hover {
+    @apply bg-zinc-900 text-zinc-100;
+  }
+  .footer-link:hover {
+    @apply text-zinc-300;
+  }
+}
+.header-button:active {
+  @apply bg-zinc-200 text-zinc-900;
+}
+@media (prefers-color-scheme: dark) {
+  .header-button:active {
+    @apply bg-zinc-800 text-zinc-100;
+  }
+}
+
+/* 320px-wide phones: narrower link targets keep the footer credit on one line. */
+@media (max-width: 359px) {
+  .footer-link {
+    width: 1.75rem;
+  }
+}
+
+/* "How to play" card (a modal <dialog>). */
+.how-to-play::backdrop {
+  background: rgb(0 0 0 / 0.35);
+}
+@media (prefers-color-scheme: dark) {
+  .how-to-play::backdrop {
+    background: rgb(0 0 0 / 0.6);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .how-to-play[open] {
+    animation: how-to-play-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .how-to-play[open]::backdrop {
+    animation: how-to-play-backdrop-in 220ms ease-out;
+  }
+}
+@keyframes how-to-play-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+@keyframes how-to-play-backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* The "press ? to reopen" tip only makes sense with a physical keyboard, which we guess from a
+   precise pointer. */
+.how-to-play-hint {
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .how-to-play-hint {
+    display: block;
+  }
+}

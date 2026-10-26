@@ -1,8 +1,7 @@
-import Head from 'next/head';
 import { useEffect, useState } from 'react';
 
 /* components */
-import Footer from '../components/footer';
+import Layout, { GameColumn, StaffPlaceholder } from '../components/layout';
 import Staff from '../components/staff';
 import Piano from '../components/piano';
 import Scoreboard from '../components/scoreboard';
@@ -22,22 +21,19 @@ export default function Home() {
   // Judges typed letters and piano presses, keeps score, and asks for the next note.
   const game = useGuessLoop(note, () => setNote(drawNote()), { onResult: handleResult });
 
-  if (note.key == null) {
-    return <HTMLHead />
-  }
-
   return (
-    <div className="dark:bg-black grid grid-rows-[1fr_auto]" style={{ height: '100dvh' }}>
-      <HTMLHead />
-      <div className="fixed top-3 right-3 z-20 flex items-center gap-1">
-        <PracticeSettings onChange={() => setNote(drawNote())} />
-        <SoundToggle />
-      </div>
-
-      <main className="flex flex-col items-center justify-center gap-[3vh]">
+    <Layout
+      actions={
+        <>
+          <PracticeSettings onChange={() => setNote(drawNote())} />
+          <SoundToggle />
+        </>
+      }
+    >
+      <GameColumn>
         <ClefLabel clef={note.clef} />
         <StaffFeedback tone={game.tone} answer={game.answer}>
-          <Staff clef={note.clef} level={note.level} />
+          {note.key == null ? <StaffPlaceholder /> : <Staff clef={note.clef} level={note.level} />}
         </StaffFeedback>
 
         <Piano onKeyPress={game.guess} marks={game.marks} feedback={game.feedback} />
@@ -47,10 +43,8 @@ export default function Home() {
         </Well>
 
         <p role="status" className="sr-only">{game.announcement}</p>
-      </main>
-
-      <Footer />
-    </div>
+      </GameColumn>
+    </Layout>
   )
 }
 
@@ -76,23 +70,3 @@ function Well({ children, className = '', style }) {
     </div>
   );
 }
-
-const HTMLHead = () => (
-  <Head>
-    <title>Piano Game</title>
-    <meta name="description" content="Learn to read sheet music with this simple game. Just type the notes as you read them." />
-    <meta property="og:title" content="Piano Game" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="og_image.png" />
-    <meta property="og:url" content="https://www.pianogame.mroudnitski.com" />
-    <meta property="og:description" content="Learn to read sheet music with this simple game. Just type the notes as you read them." />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:creator" content="@mroudnitski" />
-    <meta property="twitter:domain" content="pianogame.mroudnitski.com" />
-    <meta property="twitter:url" content="https://www.pianogame.mroudnitski.com" />
-    <meta name="twitter:title" content="Piano Game" />
-    <meta name="twitter:description" content="Learn to read sheet music with this simple game. Just type the notes as you read them." />
-    <meta name="twitter:image" content="og_image.png" />
-    <link rel="icon" href="/favicon.ico" />
-  </Head>
-)

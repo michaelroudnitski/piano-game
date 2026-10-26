@@ -134,7 +134,7 @@ export default function Piano({ onKeyPress, marks = {}, feedback }) {
       role="group"
       aria-label="Piano keys"
       className="relative select-none touch-manipulation [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none]"
-      style={{ width: 'min(490px, 90vw)', height: 'min(180px, 33vw)' }}
+      style={{ width: '100%', height: 'var(--piano-height, min(180px, 45vw))' }}
     >
       {/* White keys */}
       <div className="flex h-full gap-[2px]">
